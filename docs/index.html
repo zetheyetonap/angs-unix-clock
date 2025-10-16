@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Unix Timestamp</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            margin-top: -50px;
+        }
+
+        body.dark {
+            background-color: #2c2c2c;
+        }
+
+        body.light {
+            background-color: #f4f4f9;
+        }
+
+        #caption {
+            font-size: calc(1vw + 2vh);
+            font-weight: lighter;
+            align-self: flex-start;
+            margin: 10px;
+        }
+
+        body.dark #caption {
+            color: #777777;
+        }
+
+        body.light #caption {
+            color: lightslategrey;
+        }
+
+        #timestamp {
+            font-size: calc(8vw + 10vh);
+            font-weight: lighter;
+            margin: 10px 50px;
+        }
+
+        #isoTime {
+            font-family: Open Sans, sans-serif;
+            font-size: calc(2vw + 2vh);
+            font-weight: 200;
+            margin: 10px 10px;
+        }
+
+        #timestampSections {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-size: calc(5vw + 12vh);
+            font-weight: 800;
+        }
+
+        body.dark #crores {
+            color: rgb(119, 113, 159);
+        }
+
+        body.dark #myriads {
+            color: #b1b1b1;
+        }
+
+        body.dark #seconds {
+            color: rgb(223, 104, 67);
+        }
+
+        body.light #crores {
+            color: darkslateblue;
+        }
+
+        body.light #myriads {
+            color: #222;
+        }
+
+        body.light #seconds {
+            color: darkred;
+        }
+
+        body.dark #isoTime {
+            color: #acacac;
+        }
+
+        body.light #isoTime {
+            color: #8c8c8c;
+        }
+
+        body.dark #timestamp {
+            color: #e1d6d6;
+        }
+
+        body.light #timestamp {
+            color: #222;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="caption">ang's unix clock</div>
+    <div id="timestampSections">
+        <div id="crores" style="margin-right: 10px;"></div>
+        <div id="myriads" style="margin-right: 10px;"></div>
+        <div id="seconds"></div>
+    </div>
+    <div id="timestamp" style="display: none;"></div>
+    <div id="isoTime">2025-07-30 12:27 PDT</div>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
+    <script>
+        function getTimezone() { const date = new Date(); const options = { timeZoneName: 'short' }; const formatter = new Intl.DateTimeFormat('en-US', options); const parts = formatter.formatToParts(date); const timeZonePart = parts.find(part => part.type === 'timeZoneName'); return timeZonePart ? timeZonePart.value : ''; }
+        function updateTime() {
+            const timestampElement = document.getElementById('timestamp'); const isoTimeElement = document.getElementById('isoTime'); const titleElement = document.querySelector('title'); const croresElement = document.getElementById('crores'); const myriadsElement = document.getElementById('myriads'); const secondsElement = document.getElementById('seconds'); const currentTimestamp = Math.floor(Date.now() / 1000); const crores = Math.floor(currentTimestamp / 10000000); const myriads = Math.floor((currentTimestamp % 10000000) / 10000).toString().padStart(3, '0'); const seconds = (currentTimestamp % 10000).toString().padStart(4, '0');
+            const currentDateTime = dateFns.format(new Date(), 'd MMMM yyyy, HH:mm:ss'); titleElement.textContent = `${currentTimestamp}`;
+            timestampElement.textContent = `${currentTimestamp}`; croresElement.textContent = `${crores}`; myriadsElement.textContent = `${myriads}`; secondsElement.textContent = `${seconds}`; isoTimeElement.textContent = `${currentDateTime} ${getTimezone()}`;
+        }
+        updateTime(); setInterval(updateTime, 10); // Update at 100Hz    </script>
+    <script>
+        const applyTheme = (isDark) => { document.body.classList.toggle('dark', isDark); document.body.classList.toggle('light', !isDark); };
+        const darkMode = window.matchMedia('(prefers-color-scheme: dark)');
+        applyTheme(darkMode.matches);
+        darkMode.addEventListener('change', e => { applyTheme(e.matches); });
+    </script>
+</body>
+
+</html>
